@@ -1,0 +1,53 @@
+package yandex.praktikum;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class RegistrationPage {
+    // Поле Имя пользователя
+    private final By fieldUserName = By.xpath(".//label[text() = 'Имя']//following-sibling::input");
+    // Поле Email
+    private final By fieldEmail = By.xpath(".//label[text() = 'Email']//following-sibling::input");
+    // Поле Пароль
+    private final By fieldPassword = By.xpath(".//div/input[@name='Пароль']");
+    // Кнопка зарегестрироваться
+    private final By registrationButton = By.xpath(".//button[text()='Зарегистрироваться']");
+    // Кнопка восстановить пароль
+    private final By restorePassword = By.xpath(".//a[text()='Восстановить пароль']");
+    private final WebDriver driver;
+
+    public RegistrationPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    public void valueUserName(String inputName) {
+        driver.findElement(fieldUserName).clear();
+        driver.findElement(fieldUserName).sendKeys(inputName);
+
+    }
+
+    public void valueEmail(String inputEmail) {
+        driver.findElement(fieldEmail).clear();
+        driver.findElement(fieldEmail).sendKeys(inputEmail);
+    }
+
+    public void valuePassword(String inputPassword) {
+        driver.findElement(fieldPassword).clear();
+        driver.findElement(fieldPassword).sendKeys(inputPassword);
+    }
+
+    public void clickButtonRegistration() {
+        driver.findElement(registrationButton).click();
+    }
+
+    public void clickRestorePassword() {
+        driver.findElement(restorePassword).click();
+    }
+
+    public void registrationInputFieldsAndClickButton(String inputName, String inputEmail, String inputPassword) {
+        valueUserName(inputName);
+        valueEmail(inputEmail);
+        valuePassword(inputPassword);
+        clickButtonRegistration();
+    }
+}
