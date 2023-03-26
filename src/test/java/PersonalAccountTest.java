@@ -1,59 +1,90 @@
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import yandex.praktikum.BaseTest;
+import yandex.praktikum.Constructor.User;
 import yandex.praktikum.LoginPage;
 import yandex.praktikum.MainPage;
 import yandex.praktikum.PersonalAccountPage;
+import yandex.praktikum.helper.DeleteUser;
+import yandex.praktikum.helper.RegistrationUser;
 
-import static org.junit.Assert.assertEquals;
+import static yandex.praktikum.helper.UserData.defaultUserData;
 
-public class PersonalAccountTest extends BaseTest {
-    MainPage mainPage = new MainPage(getDriver());
-    LoginPage loginPage = new LoginPage(getDriver());
-    PersonalAccountPage personalAccountPage = new PersonalAccountPage(getDriver());
+@DisplayName("Проверка личного кабинета")
+public class PersonalAccountTest extends TestBase{
+    private static User user;
+    private final DeleteUser deleteUser = new DeleteUser();
+    private final RegistrationUser registrationUser = new RegistrationUser();
 
     @Before
-    public void openPage() {
-        openUrl();
-        clickEnterOnMainPage();
-        login();
+    public void setUp() {
+        Configuration.headless = true;
+        optionBrowser("chrome");
+        user = defaultUserData();
+        registrationUser.registrationUser();
     }
 
     @Test
-    @DisplayName("Проверка возможности перехода в личный кабинет")
-    public void clickOnPersonalAccount() {
-        clickPersonalAccount();
-        assertEquals("Выход", personalAccountPage.logoutButtonText());
+    @DisplayName("Переход по клику на Личный кабинет")
+    public void loginPersonalAccount() {
+        Selenide.open("https://stellarburgers.nomoreparties.site/login");
+        new LoginPage()
+                .setEmail(user.getEmail())
+                .setPassword(user.getPassword())
+                .clickEnter()
+                .checkSuccessfulLogin();
+        new MainPage().clickPersonalAccountButton();
+        new PersonalAccountPage().checkSuccessfulAccountLogin();
     }
 
     @Test
-    @DisplayName("Проверка нажатия на логотип из личного кабинета")
-    public void clickOnLogo() {
-        clickPersonalAccount();
-        personalAccountPage.clickLogo();
-        assertEquals("Соберите бургер", mainPage.textOfChooseBurger());
+    @DisplayName("Переход по клику на Конструктор")
+    public void transitionToConstructor() {
+        Selenide.open("https://stellarburgers.nomoreparties.site/login");
+        new LoginPage()
+                .setEmail(user.getEmail())
+                .setPassword(user.getPassword())
+                .clickEnter()
+                .checkSuccessfulLogin();
+        new MainPage().clickPersonalAccountButton();
+        new PersonalAccountPage().checkSuccessfulAccountLogin()
+                .clickConstructorButton().checkTransitionMainPage();
     }
 
     @Test
-    @DisplayName("Проверка возможности перехода в конструктор из личного кабинета")
-    public void clickOnConstructorButton() {
-        clickPersonalAccount();
-        personalAccountPage.clickConstructorButton();
-        assertEquals("Соберите бургер", mainPage.textOfChooseBurger());
+    @DisplayName("Переход по клику на Stellar Burgers")
+    public void transitionToLogo() {
+        Selenide.open("https://stellarburgers.nomoreparties.site/login");
+        new LoginPage()
+                .setEmail(user.getEmail())
+                .setPassword(user.getPassword())
+                .clickEnter()
+                .checkSuccessfulLogin();
+        new MainPage().clickPersonalAccountButton();
+        new PersonalAccountPage().checkSuccessfulAccountLogin()
+                .clickLogoButton().checkTransitionMainPage();
     }
 
     @Test
-    @DisplayName("Проверка возможности выхода из аккаунта")
-    public void successfulLogout() {
-        clickPersonalAccount();
-        personalAccountPage.clickLogoutButton();
-        assertEquals("Войти", loginPage.buttonEnterText());
+    @DisplayName("Выход по кнопке Выйти в личном кабинете")
+    public void exitFromPersonalAccount() {
+        Selenide.open("https://stellarburgers.nomoreparties.site/login");
+        new LoginPage()
+                .setEmail(user.getEmail())
+                .setPassword(user.getPassword())
+                .clickEnter()
+                .checkSuccessfulLogin();
+        new MainPage().clickPersonalAccountButton();
+        new PersonalAccountPage().checkSuccessfulAccountLogin()
+                .clickExitButton().checkExitPersonalAccount();
     }
 
     @After
-    public void quitDriver() {
-        baseAfter(getDriver());
+    public void teardown() {
+        Selenide.closeWebDriver();
+        deleteUser.deleteDefaultUser();
     }
 }

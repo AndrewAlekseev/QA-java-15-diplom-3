@@ -1,83 +1,63 @@
 package yandex.praktikum;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
+import org.junit.Assert;
+
+import static com.codeborne.selenide.Selectors.*;
+import static com.codeborne.selenide.Selenide.$;
+import static org.hamcrest.CoreMatchers.containsString;
 
 public class MainPage {
-    // Кнопка "Личный кабинет"
-    private final By personalAccount = By.xpath(".//p[text()='Личный Кабинет']");
-    // Кнопка "Оформить заказ"
-    private final By createOrder = By.xpath(".//button[text()='Оформить заказ']");
-    // Кнопка Вход в форме регистрации
-    private final By enterRegistrationForm = By.xpath(".//a[text()='Войти']");
-    // Кнопка войти в аккаунт на главной странице
-    private final By enterButton = By.xpath(".//button[text()='Войти в аккаунт']");
-    // Надпись Соберите бургер на главной странице
-    private final By chooseBurger = By.xpath(".//h1[text()='Соберите бургер']");
-    // Кнопка Булки в конструкторе
-    private final By breadButton = By.xpath(".//div/span[text()='Булки']");
-    // Кнопка Соусы в конструкторе
-    private final By sauceButton = By.xpath(".//div/span[text()='Соусы']");
-    // Кнопка Начинки в конструкторе
-    private final By filingsButton = By.xpath(".//div/span[text()='Начинки']");
-    // Краторная булка
-    private final By creatorBread = By.xpath(".//p[text()='Краторная булка N-200i']");
-    // Соус Традиционный галактический
-    private final By galaxySauce = By.xpath(".//p[text()='Соус традиционный галактический']");
-    // Филе Люминесцентного тетраодонтимформа
-    private final By luminFiling = By.xpath(".//p[text()='Филе Люминесцентного тетраодонтимформа']");
-    private final WebDriver driver;
-    private static final String url = "https://stellarburgers.nomoreparties.site/";
+    private final SelenideElement constructorButton = $(byXpath(".//p[text() = 'Конструктор']"));
+    private final SelenideElement loginButtonMainPage = $(byXpath("//button[text()='Войти в аккаунт']"));
+    private final SelenideElement personalAccountButton = $(byXpath(".//p[text()='Личный Кабинет']"));
+    private final SelenideElement checkoutButton = $(byXpath(".//button[text() = 'Оформить заказ']"));
+    private final SelenideElement burgerConstructorLabel = $(byXpath(".//h1[text() = 'Соберите бургер']"));
+    private final SelenideElement sauceButton = $(byXpath(".//span[text() = 'Соусы']"));
+    private final SelenideElement bunButton = $(byXpath(".//span[text() = 'Булки']"));
+    private final SelenideElement ingredientsButton = $(byXpath(".//span[text() = 'Начинки']"));
+    private final SelenideElement fluorescentBun = $(byXpath(".//p[text() = 'Флюоресцентная булка R2-D3']"));
+    private final SelenideElement sauce = $(byXpath(".//p[text() = 'Соус Spicy-X']"));
+    private final SelenideElement ingredients = $(byXpath(".//p[text() = 'Мясо бессмертных моллюсков Protostomia']"));
 
-    public MainPage(WebDriver driver) {
-        this.driver = driver;
+    private final SelenideElement enterText = $(byXpath(".//h2[text() = 'Вход']"));
+
+    @Step("нажать на кнопку Булки")
+    public MainPage clickBunButton() {
+        sauceButton.click();
+        bunButton.click();
+        return this;
     }
-
-    public String getUrl() {
-        return url;
+    @Step("нажать на кнопку Соусы")
+    public MainPage clickSauceButton() {
+        sauceButton.click();
+        return this;
     }
-
-    public void clickPersonalAccount() {
-        driver.findElement(personalAccount).click();
+    @Step("нажать на кнопку Соусы")
+    public MainPage clickIngredientsButton() {
+        ingredientsButton.click();
+        return this;
     }
-
-    public void clickEnterRegistrationForm() {
-        driver.findElement(enterRegistrationForm).click();
+    @Step("Нажать на кнопку личного кабинет")
+    public MainPage clickPersonalAccountButton() {
+        personalAccountButton.click();
+        return this;
     }
-
-    public void clickEnterButton() {
-        driver.findElement(enterButton).click();
+    @Step("Проверка перехода на страницу входа")
+    public void checkLoginPage() {
+        Assert.assertThat(enterText.getText(), containsString("Вход"));
     }
-
-    public String textOfChooseBurger() {
-        return driver.findElement(chooseBurger).getText();
+    @Step("Проверка перехода на вкладку Булки")
+    public void checkingTransitionToBun() {
+        Assert.assertThat(fluorescentBun.getText(), containsString("Флюоресцентная булка R2-D3"));
     }
-
-    public String buttonCreateOrderText() {
-        return driver.findElement(createOrder).getText();
+    @Step("Проверка перехода на вкладку Булки")
+    public void checkingTransitionToSauce() {
+        Assert.assertThat(sauce.getText(), containsString("Соус Spicy-X"));
     }
-
-    public void clickBreadButton() {
-        driver.findElement(breadButton).click();
-    }
-
-    public void clickSauceButton() {
-        driver.findElement(sauceButton).click();
-    }
-
-    public void clickFilingsButton() {
-        driver.findElement(filingsButton).click();
-    }
-
-    public String getTextCreatorBread() {
-        return driver.findElement(creatorBread).getText();
-    }
-
-    public String getTextGalaxySauce() {
-        return driver.findElement(galaxySauce).getText();
-    }
-
-    public String getTextLuminFiling() {
-        return driver.findElement(luminFiling).getText();
+    @Step("Проверка перехода на вкладку Булки")
+    public void checkingTransitionToIngredients() {
+        Assert.assertThat(ingredients.getText(), containsString("Мясо бессмертных моллюсков Protostomia"));
     }
 }

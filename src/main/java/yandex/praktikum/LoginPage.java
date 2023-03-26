@@ -1,61 +1,46 @@
 package yandex.praktikum;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
+import org.junit.Assert;
 
-import java.time.Duration;
+import static com.codeborne.selenide.Selectors.byXpath;
+import static com.codeborne.selenide.Selenide.$;
+import static org.hamcrest.CoreMatchers.containsString;
 
 public class LoginPage {
-    // Кнопка зарегестрироваться
-    private final By buttonStartRegistration = By.className("Auth_link__1fOlj");
-    // Поле Email
-    private final By fieldEmail = By.xpath(".//div/input[@name='name']");
-    // Поле пароль
-    private final By fieldPassword = By.xpath(".//div/input[@name='Пароль']");
-    // Кнопка войти
-    private final By enterButton = By.xpath(".//button[text()='Войти']");
-    // Текст сообщения о неправильном пароле
-    private final By messageErrorPassword = By.xpath(".//p[text()='Некорректный пароль']");
-    private final WebDriver driver;
+    private final SelenideElement registrationLink = $(byXpath(".//a[text() = 'Зарегистрироваться']"));
+    private final SelenideElement passwordRecoveryLink = $(byXpath(".//a[text() = 'Восстановить пароль']"));
+    private final SelenideElement emailPlaceholder = $(byXpath(".//label[text() = 'Email']/following-sibling::input"));
+    private final SelenideElement passwordPlaceholder = $(byXpath(".//label[text() = 'Пароль']/following-sibling::input"));
+    private final SelenideElement enterButton = $(byXpath(".//button[text() = 'Войти']"));
+    private final SelenideElement createBurgerCheck = $(byXpath(".//h1[@class = 'text text_type_main-large mb-5 mt-10']"));
 
-    public LoginPage(WebDriver driver) {
-        this.driver = driver;
+    @Step("Нажать на кнопку регистрации")
+    public void clickRegistrationLink() {
+        registrationLink.click();
     }
 
-    public void clickButtonStartRegistration() {
-        driver.findElement(buttonStartRegistration).click();
+    @Step("Заполнить email")
+    public LoginPage setEmail(String email) {
+        emailPlaceholder.setValue(email);
+        return this;
     }
 
-    public void valueEmail(String inputEmail) {
-        driver.findElement(fieldEmail).clear();
-        driver.findElement(fieldEmail).sendKeys(inputEmail);
+    @Step("Заполнить пароль")
+    public LoginPage setPassword(String password) {
+        passwordPlaceholder.setValue(password);
+        return this;
     }
 
-    public void valuePassword(String inputPassword) {
-        driver.findElement(fieldPassword).clear();
-        driver.findElement(fieldPassword).sendKeys(inputPassword);
+    @Step("Нажать на кнопку входа")
+    public LoginPage clickEnter() {
+        enterButton.click();
+        return this;
     }
 
-    public String buttonEnterText() {
-        return driver.findElement(enterButton).getText();
-    }
-
-    public String textIncorrectPassword() {
-        return driver.findElement(messageErrorPassword).getText();
-    }
-
-    public void clickButtonEnter() {
-        driver.findElement(enterButton).click();
-    }
-
-    public void loginEnterFieldsAndClick(String inputEmail, String inputPassword) {
-        valueEmail(inputEmail);
-        valuePassword(inputPassword);
-        WebElement wait = new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.elementToBeClickable(enterButton));
-        clickButtonEnter();
+    @Step("Проверка перехода на главную страницу")
+    public void checkSuccessfulLogin() {
+        Assert.assertThat(createBurgerCheck.getText(),containsString("Соберите бургер"));
     }
 }

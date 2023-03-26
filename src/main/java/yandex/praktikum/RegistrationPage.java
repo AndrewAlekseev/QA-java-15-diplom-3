@@ -1,53 +1,57 @@
 package yandex.praktikum;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
+import org.junit.Assert;
+
+import static com.codeborne.selenide.Selectors.byXpath;
+import static com.codeborne.selenide.Selenide.$;
+import static org.hamcrest.CoreMatchers.containsString;
 
 public class RegistrationPage {
-    // Поле Имя пользователя
-    private final By fieldUserName = By.xpath(".//label[text() = 'Имя']//following-sibling::input");
-    // Поле Email
-    private final By fieldEmail = By.xpath(".//label[text() = 'Email']//following-sibling::input");
-    // Поле Пароль
-    private final By fieldPassword = By.xpath(".//div/input[@name='Пароль']");
-    // Кнопка зарегестрироваться
-    private final By registrationButton = By.xpath(".//button[text()='Зарегистрироваться']");
-    // Кнопка восстановить пароль
-    private final By restorePassword = By.xpath(".//a[text()='Восстановить пароль']");
-    private final WebDriver driver;
+    private final SelenideElement namePlaceholder = $(byXpath(".//label[text() = 'Имя']/following-sibling::input"));
+    private final SelenideElement emailPlaceholder = $(byXpath(".//label[text() = 'Email']/following-sibling::input"));
+    private final SelenideElement passwordPlaceholder = $(byXpath(".//label[text() = 'Пароль']/following-sibling::input"));
+    private final SelenideElement registrationButton = $(byXpath(".//button[text() = 'Зарегистрироваться']"));
+    private final SelenideElement errorPasswordWarning = $(byXpath(".//p[@class = 'input__error text_type_main-default']"));
+    private final SelenideElement enterButton = $(byXpath(".//a[text() = 'Войти']"));
+    private final SelenideElement enterText = $(byXpath(".//h2[text() = 'Вход']"));
 
-    public RegistrationPage(WebDriver driver) {
-        this.driver = driver;
+    @Step("Заполнить Имя")
+    public RegistrationPage setName(String name) {
+        namePlaceholder.setValue(name);
+        return this;
+    }
+    @Step("Заполнить адрес электронной почты")
+    public RegistrationPage setEmail(String email) {
+        emailPlaceholder.setValue(email);
+        return this;
     }
 
-    public void valueUserName(String inputName) {
-        driver.findElement(fieldUserName).clear();
-        driver.findElement(fieldUserName).sendKeys(inputName);
-
+    @Step("Заполнить пароль")
+    public RegistrationPage setPassword(String password) {
+        passwordPlaceholder.setValue(password);
+        return this;
     }
 
-    public void valueEmail(String inputEmail) {
-        driver.findElement(fieldEmail).clear();
-        driver.findElement(fieldEmail).sendKeys(inputEmail);
+    @Step("нажать кнопку Зарегистрироваться")
+    public RegistrationPage clickRegistration() {
+        registrationButton.click();
+        return this;
+    }
+    @Step("нажать кнопку Войти")
+    public RegistrationPage clickEnterButton() {
+        enterButton.click();
+        return this;
+    }
+    @Step("ошибка некорректный пароль")
+    public void errorPassword() {
+        errorPasswordWarning.shouldHave(Condition.text("Некорректный пароль"));
     }
 
-    public void valuePassword(String inputPassword) {
-        driver.findElement(fieldPassword).clear();
-        driver.findElement(fieldPassword).sendKeys(inputPassword);
-    }
-
-    public void clickButtonRegistration() {
-        driver.findElement(registrationButton).click();
-    }
-
-    public void clickRestorePassword() {
-        driver.findElement(restorePassword).click();
-    }
-
-    public void registrationInputFieldsAndClickButton(String inputName, String inputEmail, String inputPassword) {
-        valueUserName(inputName);
-        valueEmail(inputEmail);
-        valuePassword(inputPassword);
-        clickButtonRegistration();
+    @Step("Проверка перехода на страницу входа")
+    public void checkLoginPage() {
+        Assert.assertThat(enterText.getText(), containsString("Вход"));
     }
 }
