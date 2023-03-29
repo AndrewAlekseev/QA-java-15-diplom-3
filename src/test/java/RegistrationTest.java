@@ -4,7 +4,7 @@ import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import yandex.praktikum.Constructor.User;
+import yandex.praktikum.сonstructor.User;
 import yandex.praktikum.LoginPage;
 import yandex.praktikum.MainPage;
 import yandex.praktikum.RegistrationPage;

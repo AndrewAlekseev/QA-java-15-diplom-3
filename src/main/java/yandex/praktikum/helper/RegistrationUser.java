@@ -1,6 +1,6 @@
 package yandex.praktikum.helper;
 
-import yandex.praktikum.Constructor.User;
+import yandex.praktikum.сonstructor.User;
 
 import static io.restassured.RestAssured.given;
 import static yandex.praktikum.helper.UserData.defaultUserData;

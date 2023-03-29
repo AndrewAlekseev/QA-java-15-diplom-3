@@ -1,6 +1,6 @@
 package yandex.praktikum.helper;
 
-import yandex.praktikum.Constructor.User;
+import yandex.praktikum.сonstructor.User;
 
 public class UserData {
     public static User defaultUserData() {
